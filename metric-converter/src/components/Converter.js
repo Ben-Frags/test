@@ -26,6 +26,8 @@ const conversions = {
   }
 };
 
+const API_URL = 'http://localhost:3001/api';
+
 const Converter = () => {
   const [category, setCategory] = useState('length');
   const [fromUnit, setFromUnit] = useState('meters');
@@ -43,6 +45,18 @@ const Converter = () => {
       const conversionRate = conversions[category][fromUnit][toUnit];
       setResult((value * conversionRate).toFixed(2));
     }
+
+    // Track the conversion
+    fetch(`${API_URL}/track-conversion`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        fromUnit,
+        toUnit
+      })
+    }).catch(error => console.error('Error tracking conversion:', error));
   };
 
   const getAvailableFromUnits = () => Object.keys(conversions[category]);
